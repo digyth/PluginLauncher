@@ -5,7 +5,21 @@
 
 ## 使用说明
 ### 第一步
-在插件APP中引入`PluginLib.jar`，实例化其中的`PluginLib`类，之后在代理Activity中重写`getAssets`,`getResources`,`getClassLoader`,`onPause`,`onResume`,`onCreate`六个方法，并且setTheme插件内的主题
+添加依赖
+
+    allprojects {
+		repositories {
+			...
+			maven { url 'https://jitpack.io' }
+		}
+	}
+
+	dependencies {
+    	implementation 'com.github.User:Repo:Tag'
+    }
+
+### 第二步
+实例化其中的`PluginLib`类，之后在代理Activity中重写`getAssets`,`getResources`,`getClassLoader`三个方法，并且setTheme插件内的主题
 
     private PluginLib pluginLib=new PluginLib(this);
 
@@ -41,19 +55,7 @@
         return pluginLib.getClassLoader();
     }
 
-    @Override
-    protected void onPause() {
-        pluginLib.onPause();
-        super.onPause();
-    }
-
-    @Override
-    protected void onResume() {
-        pluginLib.onResume();
-        super.onResume();
-    }
-
-### 第二步
+### 第三步
 在宿主APP中引入`InterfaceLib.jar`，即可调用其的`loadExtActivity`或`loadExtActivityForResult`方法启动插件中的Activity
 
         private InterfaceLib pluginLib=new InterfaceLib(this);
@@ -62,7 +64,7 @@
         
         lib.loadExtActivityForResult(apkPath, "ProxyActivity", new Intent().putExtra("text","这是传递的参数"), 123);
 
-### 第三步
+### 第四步
 在插件Activity中通过`PluginLib`类，调用与上一步相同的方法即可实现Activity的跳转，通过对自身Class的动态替换与启动，模拟不同Activity之间的跳转回调
 
     setResult(RESULT_OK,getIntent().putExtra("ret","这是返回的字符串"));
@@ -78,6 +80,15 @@
         }
     }
 
+### 第五步
+通过`PluginLib`类，调用loadHostActivity方法，可以反向启动宿主的Activity
+
+    private InterfaceLib pluginLib=new InterfaceLib(this);
+
+    lib.loadExtActivity(apkPath, "ProxyActivity",new Intent().putExtra("text","这是传递的参数"));
+
+    lib.loadExtActivityForResult(apkPath, "ProxyActivity", new Intent().putExtra("text","这是传递的参数"), 123);
+
 ## 优点
 * 无需声明Activity即可启动
 * 无包名要求，可启动不同包名apk
@@ -85,7 +96,7 @@
 * 缓存组件资源，避免加载组件过多内存泄漏
 
 ## 缺点
-* Android6.0以上适配，以下会崩溃(androidx库的锅，我不背)
+* 非debug模式会导致找不到资源id，暂无法解决，请使用debug版本
 * `getPackageName()`与`getLocalClassName()`获取到的是宿主Activity的属性，如要获取插件Activity的包名与类名，请使用`getClass().getName()`
 
 ## 作者的话

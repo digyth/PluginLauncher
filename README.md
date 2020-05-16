@@ -42,18 +42,6 @@ Import `PluginLib.jar` in Plugin-Application,Create a new instance of the `Plugi
         return pluginLib.getClassLoader();
     }
 
-    @Override
-    protected void onPause() {
-        pluginLib.onPause();
-        super.onPause();
-    }
-
-    @Override
-    protected void onResume() {
-        pluginLib.onResume();
-        super.onResume();
-    }
-
 ### Step 2
 Import `InterfaceLib.jar` in Host-Application, and call its `loadExtActivity` or `loadExtActivityForResult` method to load external Activity. They are similar with `startActivity` or `startActivityForResult`.
 
