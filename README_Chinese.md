@@ -15,11 +15,7 @@
 	}
 
 	dependencies {
-<<<<<<< HEAD
     	implementation 'com.github.digyth:PluginLauncher:1.1.0'
-=======
-    	implementation 'com.github.User:Repo:1.1.0'
->>>>>>> 091af40824f83a6340d823464e6fe3ca751e9ffe
     }
 
 ### 第二步
