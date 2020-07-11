@@ -6,7 +6,7 @@
 ## 使用说明
 ### 第一步
 添加依赖
-
+```gradle
     allprojects {
 		repositories {
 			...
@@ -17,10 +17,11 @@
 	dependencies {
     	implementation 'com.github.digyth:PluginLauncher:1.1.0'
     }
-
+```
 ### 第二步
 实例化其中的`PluginLib`类，之后在代理Activity中重写`getAssets`,`getResources`,`getClassLoader`三个方法，并且setTheme插件内的主题
 
+```java
     private PluginLib pluginLib=new PluginLib(this);
 
     @Override
@@ -54,24 +55,25 @@
     public ClassLoader getClassLoader() {
         return pluginLib.getClassLoader();
     }
+```
 
 ### 第三步
 在宿主APP中引入`InterfaceLib.jar`，即可调用其的`loadExtActivity`或`loadExtActivityForResult`方法启动插件中的Activity
-
+```java
         private InterfaceLib pluginLib=new InterfaceLib(this);
         
         lib.loadExtActivity(apkPath, "ProxyActivity",new Intent().putExtra("text","这是传递的参数"));
         
         lib.loadExtActivityForResult(apkPath, "ProxyActivity", new Intent().putExtra("text","这是传递的参数"), 123);
-
+```
 ### 第四步
 在插件Activity中通过`PluginLib`类，调用与上一步相同的方法即可实现Activity的跳转，通过对自身Class的动态替换与启动，模拟不同Activity之间的跳转回调
-
+```java
     setResult(RESULT_OK,getIntent().putExtra("ret","这是返回的字符串"));
     finish();
-
+```
 并可通过onActivityResult获取返回的参数
-
+```java
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -79,16 +81,16 @@
             Toast.makeText(this,data.getStringExtra("ret"),Toast.LENGTH_LONG).show();
         }
     }
-
+```
 ### 第五步
 通过`PluginLib`类，调用loadHostActivity方法，可以反向启动宿主的Activity
-
+```java
     private InterfaceLib pluginLib=new InterfaceLib(this);
 
     lib.loadExtActivity(apkPath, "ProxyActivity",new Intent().putExtra("text","这是传递的参数"));
 
     lib.loadExtActivityForResult(apkPath, "ProxyActivity", new Intent().putExtra("text","这是传递的参数"), 123);
-
+```
 ## 优点
 * 无需声明Activity即可启动
 * 无包名要求，可启动不同包名apk
